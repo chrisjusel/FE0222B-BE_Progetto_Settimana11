@@ -58,6 +58,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -87,6 +88,7 @@ public class Book {
 	@Column(nullable = false)
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JsonIgnoreProperties("books")
 	@JoinTable(name = "book_author", 
 	joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"), 
 	inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"))

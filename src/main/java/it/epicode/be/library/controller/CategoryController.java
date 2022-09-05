@@ -21,27 +21,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
-
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.epicode.be.library.common.util.dto.book.BookDto;
-import it.epicode.be.library.common.util.dto.book.converter.BookDtoToBook;
 import it.epicode.be.library.model.Book;
-import it.epicode.be.library.service.BookService;
+import it.epicode.be.library.model.Category;
+import it.epicode.be.library.service.CategoryService;
 import it.epicode.be.library.util.exception.BookNotFoundException;
 
 @RestController
-@RequestMapping("/api/books")
-public class BookController {
+@RequestMapping("/api/categories")
+public class CategoryController {
 
 	@Autowired
-	private BookService bookService;
-	
-	@Autowired
-	private BookDtoToBook bookConverter;
+	private CategoryService categoryService;
 
 	/*
 	 * SOLO gli admin possono accedervi;
@@ -49,12 +42,11 @@ public class BookController {
 	 * metodo necessita di un barer token per poter essere
 	 * utilizzato
 	 */
-	@PostMapping("/save") 
+	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<Book> save(@RequestBody BookDto bookDto) {
-		Book book = bookConverter.convert(bookDto); 
-		Book res = bookService.save(book);
+	public ResponseEntity<Category> save(@RequestBody Category category) {
+		Category res = categoryService.save(category);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
@@ -65,36 +57,14 @@ public class BookController {
 	 * @return
 	 */
 	@GetMapping("/{id}")
-	public ResponseEntity<Book> getById(@PathVariable Long id) {
-		Book res = bookService.findBookById(id);
+	public ResponseEntity<Category> getById(@PathVariable Long id) {
+		Category res = categoryService.findCategoryById(id);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 	
-	@GetMapping("/findbyauthor")
-	public ResponseEntity<Page<Book>> findByAuthors(@RequestParam Long author, Pageable pageable){
-		Page<Book> res = bookService.findByAuthors(author, pageable);
-		
-		if(res.hasContent()) {
-			return new ResponseEntity<>(res, HttpStatus.OK);
-		} else {
-			throw new BookNotFoundException("No books found for this author");
-		}
-	}
-	
-	@GetMapping("/findbycategory")
-	public ResponseEntity<Page<Book>> findByCategories(@RequestParam String category, Pageable pageable){
-		Page<Book> res = bookService.findByCategories(category, pageable);
-		
-		if(res.hasContent()) {
-			return new ResponseEntity<>(res, HttpStatus.OK);
-		} else {
-			throw new BookNotFoundException("No books found for this category");
-		}
-	}
-	
 	@GetMapping("/findall")
-	public ResponseEntity<Page<Book>> findAll(Pageable pageable) {
-		Page<Book> findAll = bookService.findAll(pageable);
+	public ResponseEntity<Page<Category>> findAll(Pageable pageable) {
+		Page<Category> findAll = categoryService.findAll(pageable);
 		
 		if(findAll.hasContent()) {
 			return new ResponseEntity<>(findAll, HttpStatus.OK);
@@ -106,17 +76,16 @@ public class BookController {
 	@PutMapping("/update")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<Book> update(@RequestBody Book book){
-		Book update = bookService.update(book);
+	public ResponseEntity<Category> update(@RequestBody Category category) {
+		Category update = categoryService.update(category);
 		return new ResponseEntity<>(update, HttpStatus.OK);
-	} 
-	
+	}
+
 	@DeleteMapping("/delete/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<String> delete(@PathVariable Long id){
-		bookService.delete(id);
-		return new ResponseEntity<String>("Book succeffully removed", HttpStatus.OK);
+	public ResponseEntity<String> delete(@PathVariable Long id) {
+		categoryService.delete(id);
+		return new ResponseEntity<String>("Category succeffully removed", HttpStatus.OK);
 	}
-	
 }
