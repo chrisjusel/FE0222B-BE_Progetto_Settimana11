@@ -12,6 +12,7 @@ Nell'intero progetto è stato adottato un sistema di gestione delle eccezioni.
 - [Utilizzo API - Libri](#Utilizzo-API-Libri)
 - [Utilizzo API - Autori](#Utilizzo-API-Autori)
 - [Utilizzo API - Categorie](#Utilizzo-API-Categorie)
+- [Utilizzo API - Login e Registrazione](#Utilizzo-API-Login-e-Registrazione)
 - [Risorse Aggiuntive](#Risorse-Aggiuntive)
 
 ## Quadro generale
@@ -160,7 +161,37 @@ Ciascuna di queste chiamate, rende persistenti, modifica, cancella o recupera da
     "name" : "Giallo"
 }
 ```
+
+##Utilizzo API - Login e Registrazione
+
+##Registrazione
+- /auth/register
+```
+ //request body
+{
+    "username" : "admin",
+    "password" : "admin",
+    "email" : "admin@admin.it",
+    "roles": ["ADMIN"]
+}
+```
+
+##Login
+- /auth/login
+```
+ //request body
+{
+    "username" : "admin",
+    "password" : "admin"
+}
+```
  
- ## Risorse Aggiuntive
- E' fornito il file di esportazione di Postman contentente già la configurazione corretta dei metodi per poterli testare
+## Risorse Aggiuntive
+E' fornito il file di esportazione di Postman contentente già la configurazione corretta dei metodi per poterli testare
+###URL per database h2
+- /h2-console
+
+###URL per documentazione swagger
+Per alcuni metodi, è prevista l'autorizzazione attraverso bearer token
+- /swagger-ui.html
 
