@@ -8,8 +8,11 @@
  */
 package it.epicode.be.library.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.epicode.be.library.model.Book;
+import it.epicode.be.library.common.util.dto.author.AuthorResponse;
+import it.epicode.be.library.common.util.dto.category.CategoryResponse;
+import it.epicode.be.library.common.util.dto.category.converter.CategoryToCategoryResponse;
 import it.epicode.be.library.model.Category;
 import it.epicode.be.library.service.CategoryService;
 import it.epicode.be.library.util.exception.BookNotFoundException;
@@ -63,11 +68,17 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/findall")
-	public ResponseEntity<Page<Category>> findAll(Pageable pageable) {
+	public ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable) {
 		Page<Category> findAll = categoryService.findAll(pageable);
+		ArrayList<CategoryResponse> categoryResponse = new ArrayList<>();
 		
 		if(findAll.hasContent()) {
-			return new ResponseEntity<>(findAll, HttpStatus.OK);
+			for(Category category : findAll.getContent()) {
+				CategoryResponse res = CategoryToCategoryResponse.convert(category);
+				categoryResponse.add(res);
+			}
+			Page<CategoryResponse> response = new PageImpl<>(categoryResponse);
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} else {
 			throw new BookNotFoundException("No book is present");
 		}

@@ -8,8 +8,11 @@
  */
 package it.epicode.be.library.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +27,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.epicode.be.library.common.util.dto.author.AuthorResponse;
+import it.epicode.be.library.common.util.dto.author.converter.AuthorToAuthorResponse;
+import it.epicode.be.library.common.util.dto.book.BookResponse;
+import it.epicode.be.library.common.util.dto.book.converter.BookToBookResponse;
 import it.epicode.be.library.model.Author;
+import it.epicode.be.library.model.Book;
 import it.epicode.be.library.service.AuthorService;
 import it.epicode.be.library.util.exception.BookNotFoundException;
 
@@ -37,9 +45,9 @@ public class AuthorController {
 
 	/*
 	 * SOLO gli admin possono accedervi;
-	 * @SecurityRequirement indica su swagger-ui che questo
-	 * metodo necessita di un barer token per poter essere
-	 * utilizzato
+	 * 
+	 * @SecurityRequirement indica su swagger-ui che questo metodo necessita di un
+	 * barer token per poter essere utilizzato
 	 */
 	@PostMapping("/save")
 	@PreAuthorize("hasAuthority('ADMIN')")
@@ -48,10 +56,11 @@ public class AuthorController {
 		Author res = authorService.save(author);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
-	
+
 	/**
-	 * I metodi senza l'annotazione @PreAuthorize sono accessibili 
-	 * da tutti gli utenti loggati
+	 * I metodi senza l'annotazione @PreAuthorize sono accessibili da tutti gli
+	 * utenti loggati
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -60,30 +69,36 @@ public class AuthorController {
 		Author res = authorService.findAuthorById(id);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/findall")
-	public ResponseEntity<Page<Author>> findAll(Pageable pageable) {
+	public ResponseEntity<Page<AuthorResponse>> findAll(Pageable pageable) {
 		Page<Author> findAll = authorService.findAll(pageable);
-		
-		if(findAll.hasContent()) {
-			return new ResponseEntity<>(findAll, HttpStatus.OK);
+		ArrayList<AuthorResponse> authorResponse = new ArrayList<>();
+
+		if (findAll.hasContent()) {
+			for (Author author : findAll.getContent()) {
+				AuthorResponse res = AuthorToAuthorResponse.convert(author);
+				authorResponse.add(res);
+			}
+			Page<AuthorResponse> response = new PageImpl<>(authorResponse);
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} else {
 			throw new BookNotFoundException("No author is present");
 		}
 	}
-	
+
 	@PutMapping("/update")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<Author> update(@RequestBody Author author){
+	public ResponseEntity<Author> update(@RequestBody Author author) {
 		Author update = authorService.update(author);
 		return new ResponseEntity<>(update, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/delete/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<String> delete(@PathVariable Long id){
+	public ResponseEntity<String> delete(@PathVariable Long id) {
 		authorService.delete(id);
 		return new ResponseEntity<String>("Author succeffully removed", HttpStatus.OK);
 	}
