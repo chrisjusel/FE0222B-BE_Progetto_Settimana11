@@ -162,9 +162,9 @@ Ciascuna di queste chiamate, rende persistenti, modifica, cancella o recupera da
 }
 ```
 
-##Utilizzo API - Login e Registrazione
+## Utilizzo API - Login e Registrazione
 
-##Registrazione
+## Registrazione
 - /auth/register
 ```
  //request body
@@ -176,7 +176,7 @@ Ciascuna di queste chiamate, rende persistenti, modifica, cancella o recupera da
 }
 ```
 
-##Login
+## Login
 - /auth/login
 ```
  //request body
@@ -188,10 +188,10 @@ Ciascuna di queste chiamate, rende persistenti, modifica, cancella o recupera da
  
 ## Risorse Aggiuntive
 E' fornito il file di esportazione di Postman contentente già la configurazione corretta dei metodi per poterli testare
-###URL per database h2
+### URL per database h2
 - /h2-console
 
-###URL per documentazione swagger
+### URL per documentazione swagger
 Per alcuni metodi, è prevista l'autorizzazione attraverso bearer token
 - /swagger-ui.html
 
