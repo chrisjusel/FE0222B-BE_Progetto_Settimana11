@@ -1,3 +1,6 @@
+/**
+ * modello di autore che verrà restituito in output all'utente
+ */
 package it.epicode.be.library.common.util.dto.author;
 
 import java.util.HashSet;

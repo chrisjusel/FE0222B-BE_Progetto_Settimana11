@@ -1,3 +1,6 @@
+/**
+ * modello di categoria che verrà restituito in output all'utente
+ */
 package it.epicode.be.library.common.util.dto.category;
 
 import java.util.HashSet;

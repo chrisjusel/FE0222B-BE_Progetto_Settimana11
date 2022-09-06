@@ -1,3 +1,6 @@
+/**
+ * Modello libro che verrà dato in output all'utente
+ */
 package it.epicode.be.library.common.util.dto.book;
 
 import java.util.HashSet;
